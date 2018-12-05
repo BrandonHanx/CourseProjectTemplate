@@ -1,0 +1,537 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage{geometry}
+\geometry{left=2.0cm,right=2.0cm,top=2.5cm,bottom=2.5cm}
+\usepackage{amsfonts} 
+\usepackage{graphicx}
+\usepackage{float} 
+\usepackage{enumerate}
+\usepackage{titlesec}
+\usepackage{titletoc}
+\usepackage{listings}
+\usepackage{fontspec}
+\newfontfamily\consolas{Consolas}
+\usepackage{xcolor}
+  \lstset{
+  language=Matlab,  %代码语言使用的是matlab
+  frame=shadowbox,  %把代码用带有阴影的框圈起来
+  rulesepcolor=\color{red!20!green!20!blue!20},%代码块边框为淡青色
+  keywordstyle=\color{blue!70}\bfseries, %代码关键字的颜色为蓝色，粗体
+  commentstyle=\color{red!10!green!70}\textit,    % 设置代码注释的颜色
+  showstringspaces=false,%不显示代码字符串中间的空格标记
+  numbers=left, % 显示行号
+  numberstyle=\tiny\consolas,  
+  basicstyle=\small\consolas,  % 行号字体
+  stringstyle=\ttfamily, % 代码字符串的特殊格式
+  breaklines=true,      %对过长的代码自动换行
+  extendedchars=false,  %解决代码跨页时，章节标题，页眉等汉字不显示的问题
+  texcl=true}
+ 
+\usepackage{algorithm}  
+\usepackage{algorithmicx}  
+\usepackage{algpseudocode}  
+\usepackage{amsmath}  
+  
+\floatname{algorithm}{Algorithm}  
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}  
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+
+\title{Algorithm Implementation \\ for Minimal Enclosing Circle Problem}
+\author{Han Xiao 316101136} 
+\date{\today}
+
+\begin{document}
+\lstset{language=Matlab}%代码语言使用的是matlab
+\lstset{breaklines}%自动将长的代码行换行排版
+\lstset{extendedchars=false}%解决代码跨页时，章节标题，页眉等汉字不显示的问题
+
+%%%%%%%%%% PRELIMINARY MATERIAL %%%%%%%%%%
+\newgeometry{top=8cm}
+\maketitle
+\begin{center}
+Project one of Data Analysis and Algorithm Design % change this
+\\[12pt]
+ISEE college, Zhejiang university
+\end{center}
+\thispagestyle{empty}
+\restoregeometry
+
+%%%%%%%%%% CONTENTS %%%%%%%%%%
+\newpage
+\tableofcontents
+\listoffigures
+\listofalgorithms
+ 
+
+
+%%%%%%%%%% SAMPLE SECTION %%%%%%%%%%
+\newpage
+\section{Introduction}
+%
+The minimal enclosing circle is used in planning the location of a shared facility. For example, a shared facility is a hospital servicing a community. Note that traditionally people consider post office as an example hence post office problem (see Voronoi diagram).  If we consider each home in a community as points in the plane, finding minimal enclosing circle gives a good place to put the hospital i.e., the center of the minimal circle. Placing the hospital at the center of minimal circle minimizes the distance between the hospital and the farthest home (point) in the community.
+
+In the military, this problem is known as the “Bomb Problem”. If we suppose each target on a map as a planar point, the center of the minimal circle of a map i.e., set, is a good place to drop a bomb for maximum destruction. Furthermore, the radius of the minimal circle can be used to calculate how much explosive is required.
+
+
+This problem is also useful to examine the point that lie on the boundary of the minimal enclosing circle. These points are in a sense the outliers of the set, and in statistics, are sometimes discarded to get a more robust estimate.
+
+\begin{figure}[H]
+\begin{minipage}[H]{0.5\linewidth}
+\centering
+\includegraphics[width=1.7in]{Realexample.png}
+\caption{Real stuff}
+\label{fig:side:a}
+\end{minipage}%
+\begin{minipage}[H]{0.5\linewidth}
+\centering
+\includegraphics[width=1.7in]{Mathmodel.png}
+\caption{Math model}
+\label{fig:side:b}
+\end{minipage}
+\end{figure}
+
+The simplest algorithm considers every circle defined by two or three of the n points, and finds the smallest of “these” circles that contains every point. There exits O(n$^3$) such circles, and each takes O(n) time to check, for a total running time of O(n$^4$).  Elzinga and Hearn gave an O(n$^2$) algorithm in 1972, and Shamos and Hoey (1975), Preparata (1977), and Shamos (1978) discovered the first O(n$\log n$) algorithms.
+
+Finally, and to everyone's surprise, in 1983 Nimrod Megiddo showed that the minimal enclosing circle problem can be solve in O(n) time using the prune-and-search techniques for linear programming. This landmark result is one of the most beautiful in the field of computational geometry.
+
+\subsection{Problem Statement}
+%
+The Minimal Enclosing Circle Problem is, simply stated, the problem of finding the smallest circle that completely contains a set of points. Formally, given a set P of n planar points, find the circle C of smallest radius such that all points in P are contained in either C or its boundary.
+
+
+\subsection{The Work I did}
+%
+In this report, I mainly completed and mentioned the following contents:
+\begin{enumerate}
+\item Introduction, application and research of the minimal enclosing circle;
+\item Theoretical analysis and code implementation of the three mainstream algorithms (brute-force method, DFAA algorithm and Randomized incremental algorithm) were conducted;
+\item Record and compare the running time of the above three methods.
+\end{enumerate}
+
+%%%%%%%%%% INFORMATION %%%%%%%%%%
+\newpage
+\section{A brute force method}
+
+\subsection{Basic theory}
+%
+\begin{itemize}
+    \item{For any point group, the two points with the maximum distance from each other must be on the minimal enclosing circle.}
+    \item{The minimal enclosing circle has at least two intersections with the point group.}
+    \item{When there are only two intersecting points, the minimal enclosing circle has the diameter of the line connecting the maximum two points.}
+    \item{If the enclosing circle intersects three or more points in the point group, the enclosing circle is the circumscribed circle of a triangle formed by three points in the point group.}
+\end{itemize}
+
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=0.4\linewidth]{Part2.png} 
+	\caption{Two cases of an enclosing circle} 
+	\label{fig:Two cases}  
+\end{figure}
+
+
+\subsection{Algorithm pseudo code}
+%
+\begin{algorithm}[h]  
+  \caption{Brute force method solving minimal enclosing circle problem}  
+  \label{alg::Brute force method}  
+  \begin{algorithmic}[1]  
+    \Require  
+      P:point group;  
+    \Ensure  
+      O:center of the smallest circle;
+      R:radius of the smallest circle;
+    \State initial $C=0$ and $R=0$;    
+    \State Calculate the distance matrix of point group P, select the nearest two points, and set them as A and B;  
+    \State Compute and find the circle O with $\overline{AB}$ as the diameter;
+    \If {O can cover all the points} 
+    \State Go to end  
+    \Else
+    \State Calculate the distance from all points to $\overline{AB}$, arrange points in descending order of distance, and get the new point group P';
+    \EndIf
+    \Repeat  
+    \State Take the point at the top of the current stack from P', form triangle T with A and B, and find the outer circle O of T;  
+    \Until{O covers all the points in the set P'}  
+  \end{algorithmic}  
+\end{algorithm}  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{A more efficiency method}
+%
+In 2000, Wang wei et al. proposed an accurate and fast algorithm for the minimal enclosing circle of point set, which is abbreviated as DFAA.
+\subsection{Basic theory}
+%
+\begin{itemize}
+    \item{There is a finite number of minimal circles that can be formed by taking any 3 or 2 points in the set of points and including them.}
+    \item{When looking for the radius, if each update is guaranteed to be incremental, then after a finite number of iterations, the maximum radius of the minimum circles can be obtained.}
+\end{itemize}
+
+
+\subsection{Algorithm pseudo code}
+%
+\begin{algorithm}[h]  
+  \caption{DFAA method solving minimal enclosing circle problem}  
+  \label{alg::DFAA method}  
+  \begin{algorithmic}[1]  
+    \Require  
+      P:point group;  
+    \Ensure  
+      O:center of the smallest circle;
+      R:radius of the smallest circle;
+    \State initial $C=0$ and $R=0$;    
+    \State Take 3 points randomly in the set of points: A, B, and C;  
+    \State Compute and find the minimal enclosing circle O with these three points;
+    \State Query the point v farthest from the center of the circle of O in point set P;
+    \If {O covers v} 
+    \State Go to end  
+    \Else
+    \State Select 3 points in {A, B, C, v}(select these 3 points in the basis as far as possible to be points on the boundary), construct the minimal enclosing circle O' containing 4 points;
+    \State Then back to the second step;
+    \EndIf
+  \end{algorithmic}  
+\end{algorithm}  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{Linear-Time Method}
+%
+
+\subsection{Basic theory}
+%
+The last method  is a randomized incremental algorithm. Suppose that none of the given circles is contained in another given circle. By using the fact that the minimal enclosing circle should be tangent to one, two, or three of the given circles, we could start from a single circle and enlarge it gradually to enclose all given circles.
+
+
+\subsection{Algorithm pseudo code}
+%
+\begin{algorithm}[h]  
+  \caption{Randomized incremental method solving minimal enclosing circle problem}  
+  \label{alg::Linear-Time method}  
+  \begin{algorithmic}[1]  
+    \State Let $p_1,...,p_i-1$ be the points in random order;
+    \State Let $C'_j$ be the minimal enclosing circle for $p_1,...,p_{i-1}(j \leq i-1)$,and with p on the boundary;  
+    \Require  
+      P:point group;  
+    \Ensure  
+      O:center of the smallest circle;
+      R:radius of the smallest circle;
+
+    \State Suppose only one point known;
+    \State Start with $C_1=C(p,p_1)$;
+    \For{$i=2$ to $n$}    
+    \If{$p_j$ is inside $C'_{j-1}$} $C'_j=C'_{j-1}$;
+    \Else{ Solve minimal enclosing circle for $p_1,...,p_i-1$ with two points known (p and $p_i$)}; 
+    \EndIf
+    \EndFor 
+    
+    \State Suppose two points known;
+    \State Start with $C_2=C(p_1,p_2)$;
+    \For{$i=3$ to $n$}    
+    \If{$p_j$ is inside $C'_{j-1}$} $C'_j=C'_{j-1}$;
+    \Else{ Solve minimal enclosing circle for $p_1,...,p_i-1$ with one point known $(p_i)$}; 
+    \EndIf
+    \EndFor
+
+  \end{algorithmic}  
+\end{algorithm}
+
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=0.6\linewidth]{Part4.png} 
+	\caption{The formation of a minimal enclosing circle} 
+	\label{fig:Formation}  
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{Efficiency comparison of different algorithms}
+%
+I used MATLAB to achieve the above three algorithms, the test results of the three are correct, the specific source code can refer to the appendix of this report.However, the running time of the three algorithms is quite different. I will briefly describe the time complexity of the three algorithms ,then test and plot them here. Due to limited personal level and length of report, specific proof and time complexity proof of the three algorithms are not given. Please refer to other literatures.
+
+\subsection{Time complexity analysis}
+\begin{itemize}
+\item For the brute force algorithm, there are $O(n^3)$ such circles and each takes $O(n)$ time to check, so the total running time is $O(n^4)$. This algorithm is computationally expensive.
+\item For the DFAA algorithm, the proof of its complexity is a little bit complicated, the result is $O(\left|\lg{\frac{d}{8R}}\right|n)$. Where R is the radius of the circle, and d is the distance to the circle of the point that is not on the circle but closest to the circle.
+\item For the linear time algorithm, 'incremental construction' refers to add points one by one and maintain the solution so far, 'randomized' refers to use a random order to add the points. We can think of this algorithm simply as the sum of points one by one, so its complexity is $O(n)$.
+\end{itemize}
+
+\subsection{Running time statistics}
+
+I observed the operation time of the three algorithms under the condition that the number of points increased. As shown in the figure below, the brute force method has the worst effect, and the linear time algorithm has obvious advantages in the case of few points. However, as the number of points increases, the radius of the minimal enclosing circle increases, so the computing time of the latter two tends to be equal.
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=0.6\linewidth]{Result.png} 
+	\caption{Comparison of running time of the three algorithms (logarithmic coordinates)} 
+	\label{fig:Result}  
+\end{figure}
+
+%%%%%%%%%% APPENDIX %%%%%%%%%%
+\newpage
+\appendix
+\section{Appendix}
+%
+I provide all my source code in the appendix.
+
+\subsection{Source code in Part.2}
+%
+\begin{lstlisting}
+function [C,minRad]= minCircleBrute(P)
+
+%  Finds the minimum circle enclosing a given set of 2-D points.
+
+	[A,B] = findLongAxis(P);
+
+	C(1) = (A(1)+B(1))/2;
+
+	C(2) = (A(2)+B(2))/2;
+
+	minRad = sqrt((C(1)-A(1))^2+(C(2)-A(2))^2);
+
+	if isContain(P,C,minRad)
+	    T = [A;B];
+	    return;
+	end
+
+	d = calcDistance(A,B,P);
+	P2 = [P d];
+	sortrows(P2,-3);
+	[m,~] = size(P2);
+
+	for  i = 1:m
+	            tP = P2(i,1:2);
+	            T = [A;B;tP];
+	            [C,minRad] = triangleCircumcircle(T);
+	            if   isContain(P,C,minRad)
+	                       return;
+	            end
+	end
+
+end
+\end{lstlisting}
+
+\begin{lstlisting}
+function [A,B] = findLongAxis(P)
+
+    [m,~] = size(P);
+    d = ones(m);
+    for i = 1:m
+        for j = 1:m
+            d(i,j) = sqrt((P(i,1)-P(j,1))^2+(P(i,2)-P(j,2))^2);
+        end
+    end
+
+    [col_max,row] = max(d);
+    [~,col] = max(col_max);
+    row = row(col);
+    A = P(row,:);
+    B = P(col,:);
+
+end
+\end{lstlisting}
+
+\begin{lstlisting}
+function flag = isContain(P,O,r)
+
+	[m,~] = size(P);
+	flag = true;
+
+	for i = 1:m
+		 if sqrt((O(1)-P(i,1))^2+(O(2)-P(i,2))^2)>r
+		     flag = false;
+		     break;
+		 end
+	end
+
+end
+\end{lstlisting}
+
+\begin{lstlisting}
+function d=calcDistance(A,B,P)
+
+	a = B(2)-A(2);
+
+	b = A(1)-B(1);
+
+	c = B(1)*A(2)-B(2)*A(1);
+
+	d = abs(a.*P(:,1)+b.*P(:,2)+c)./sqrt(a*a+b*b);
+
+end
+\end{lstlisting}
+
+\begin{lstlisting}
+function[O,r]= triangleCircumcircle(T)
+
+	xa = T(1,1);ya = T(1,2);
+
+	xb = T(2,1);yb = T(2,2);
+
+	xc = T(3,1);yc = T(3,2);
+
+
+	A = [xa-xb ya-yb;xa-xc ya-yc];
+
+	W = [(xa*xa-xb*xb+ya*ya-yb*yb)/2;(xa*xa-xc*xc+ya*ya-yc*yc)/2];
+
+
+	O = (A^(-1)*W)';
+
+	r = sqrt((O(1,1)-xa)^2+(O(1,2)-ya)^2);
+
+
+end
+\end{lstlisting}
+
+\subsection{Source code in Part.3}
+%
+\begin{lstlisting}
+function [C,minRad] = minCircleDFAA(p)
+
+%  Finds the minimum circle enclosing a given set of 2-D points.
+
+      x = p(:,1);
+      y = p(:,2);
+      set_3P = randperm (length(x),3);
+      AI = set_3P(1);
+      BI = set_3P(2);
+      CI = set_3P(3);
+      A = [x(AI) y(AI)];
+      B = [x(BI) y(BI)];
+      C = [x(CI) y(CI)];
+
+      while 1
+            [cr,minRad] = findCenterRadius(A,B,C);
+            r = zeros(1,length(x));
+            for i = 1:length(x)
+                 r(i) = sqrt((x(i)-cr(1))^2+(y(i)-cr(2))^2);
+            end
+            maxValue = max(r);     
+            [mc] = find(maxValue == r);
+             
+
+            if maxValue <=  minRad || ~isempty( intersect(mc, [AI BI CI]) )
+                  C = cr;
+                  minRad = minRad;
+                  break                      
+            end
+            D = [x(mc),y(mc)];
+            P = [A;B;C;D];
+              
+            DI = mc;
+            set_3P = nchoosek([AI,BI,CI,DI],3);
+            rSet = [];
+            for i = 1:length(set_3P)
+                  A = [x(set_3P(i,1)) y(set_3P(i,1))];
+                  B = [x(set_3P(i,2)) y(set_3P(i,2))];
+                  C = [x(set_3P(i,3)) y(set_3P(i,3))];
+                   
+                  [O,R] = findCenterRadius(A,B,C);
+                  rSet = [rSet;[O,R,i]];
+            end
+            rSet = sortrows(rSet,3);
+             
+            for i = 1:size(rSet,1)
+                  flag  =  1;
+                  for j = 1:4
+                     if sqrt((rSet(i,1)-(P(j,1) ))^2+ ( rSet(i,2)-(P(j,2)))^2) >rSet(i,3)
+                        flag  =  0;  
+                        break
+                     end
+                  end
+                  if flag  ==  1      
+                        break
+                  end
+            end
+             
+            mc = rSet(i,4);
+            AI  =  set_3P(mc, 1);
+            BI  =  set_3P(mc, 2);
+            CI  =  set_3P(mc, 3);
+            A = [x(set_3P(mc,1)) y(set_3P(mc,1))];
+            B = [x(set_3P(mc,2)) y(set_3P(mc,2))];
+            C = [x(set_3P(mc,3)) y(set_3P(mc,3))];
+      end
+end
+\end{lstlisting}
+
+\begin{lstlisting}
+function [C,Raduis] = findCenterRadius(p1,p2,p3)
+
+% Finds the center and radius of a circle defined by three points.
+
+Xc = (p3(1)*p3(1) * (p1(2) - p2(2)) + (p1(1)*p1(1) + (p1(2) - p2(2))*(p1(2) - p3(2))) * (p2(2) - p3(2)) + p2(1)*p2(1) * (-p1(2) + p3(2))) / (2 * (p3(1) * (p1(2) - p2(2)) + p1(1) * (p2(2) - p3(2)) + p2(1) * (-p1(2) + p3(2))));
+
+Yc = (p2(2) + p3(2))/2 - (p3(1) - p2(1))/(p3(2) - p2(2)) * (Xc - (p2(1) + p3(1))/2);
+
+C = [Xc Yc];
+
+Raduis = distance(C,p1); 
+\end{lstlisting}
+
+\newpage
+\subsection{Source code in Part.4}
+%
+\begin{lstlisting}
+function [C,minRad] = minCircleLinear(n,p,m,b)
+
+%  Finds the minimum circle enclosing a given set of 2-D points.
+
+c = [-1 -1];
+r = 0;
+
+if (m == 2)
+    c = b(1,:);
+    r = 0;
+elseif (m == 3)
+    c = (b(1,:) + b(2,:))/2;
+    r = distance(b(1,:),c);
+elseif (m == 4)
+    [C,minRad] = findCenterRadius(b(1,:),b(2,:),b(3,:));
+    return;
+end
+
+C = c;
+minRad = r;
+
+for i = 1:n
+    if(distance(p(i,:),C) > minRad)
+            if((b(1,:) ~= p(i,:)) & (b(2,:) ~= p(i,:)) & (b(3,:) ~= p(i,:)))
+                b(m,:) = p(i,:);
+                [C,minRad] = minCircle(i,p,m+1,b);
+            end
+    end
+end
+return;
+\end{lstlisting}
+
+\begin{lstlisting}
+function distance = dist(x,y)
+
+% Find the distance between two points in the Cartesian space
+
+distance = sqrt(sum((x - y).^2));
+\end{lstlisting}
+
+\subsection{Source code in Part.5}
+
+\begin{lstlisting}
+n = 10000;
+x = unifrnd (-10, 10, 1, n);
+y = unifrnd (-10, 10, 1, n);
+p=[x',y'];
+
+b=[100 100
+   100 100
+   100 100];
+t0 = clock;
+[C1,minRad1] = minCircleBrute(p);
+t1 = clock;
+[C2,minRad2] = minCircleDFAA(p);
+t2 = clock;
+[C3,minRad3] = minCircleLinear(n,p,1,b);
+t3 = clock;
+delta1 = etime(t1,t0)
+delta2 = etime(t2,t1)
+delta3 = etime(t3,t2)
+\end{lstlisting}
+
+\end{document}
