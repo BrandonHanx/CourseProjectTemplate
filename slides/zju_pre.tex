@@ -1,0 +1,219 @@
+%\documentclass[CJK]{beamer}
+
+%\usepackage[utf8]{inputenc}
+%\usepackage[UTF8,noindent]{ctexcap}
+%\usepackage{xcolor}
+
+\documentclass[xcolor=svgnames]{beamer}
+\usecolortheme[named=CornflowerBlue]{structure}
+\usetheme{Berlin}
+%\usecolortheme{dolphin}
+%\setbeamertemplate{itemize items}{\color{red}$\bullet$]}
+\usepackage{time}             % date and time
+\usepackage{graphicx, epsfig}
+\usepackage[T1]{fontenc}      % european characters
+\usepackage{amssymb,amsmath}  % use mathematical symbols
+\usepackage{palatino}         % use palatino as the default font
+\usepackage{multimedia}
+\usepackage{subfigure}
+\usepackage{mathrsfs}
+%\usepackage{movie15}
+
+
+\title{Title}
+\subtitle{subtitle}
+\author{Han Xiao}
+\institute{ISEE, Zhejiang University} % COMMAND UNIQUE TO BEAMER
+\date{\today}
+\begin{document}
+\begin{frame}
+\begin{figure}
+\centering
+\includegraphics[width=0.15\linewidth]{ZJU_LOGO.png}
+\end{figure}
+  \titlepage
+
+\end{frame}
+
+\section[Outline]{}
+%%%%%%%%%%%%%%%%%%%
+\frame {
+    \frametitle{\secname}
+    \tableofcontents
+  }
+
+  \AtBeginSubsection[] {
+  \frame<handout:0> {
+  \frametitle{Outline}
+  \tableofcontents[current,currentsubsection]
+    }
+  }
+
+\section{Chapter1}
+\subsection{section1}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{TITLE}
+  \begin{quote}
+    ``quote''
+    \vfill -author, 2004
+  \end{quote}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{LIST}
+
+  \begin{enumerate}
+    \item<1-> Item1
+    \item<2-> Item2
+      \begin{itemize}
+        \item 1;
+        \item 2.
+      \end{itemize}
+    \item<3-> Item3
+    \item<4-> Item4
+    \item<5-> Item5
+  \end{enumerate}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{section2}
+%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+  \frametitle{LINK}
+    This is a link:
+
+    \begin{center}
+      \begin{Large}
+        \color{red}{http://www.baidu.com/}
+      \end{Large}
+    \end{center}
+
+    %\uncover<2->{
+    \begin{enumerate}
+      \item 1;
+      \item 2;
+      \item 3.
+    \end{enumerate}
+
+
+    \begin{block}{Note}
+     note
+    \end{block}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Chapter2}
+\subsection{section1}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{TITLE}
+  Formula1:
+    \begin{align*}
+\boldsymbol{Y}  & =\left(  Y_{1},\ldots,Y_{n}\right),
+\quad \text{  }n\times1 \\
+\boldsymbol{X}  & =\left(
+{X}_{1},\ldots,{X}_{n}\right),\quad \text{ }n\times p \\
+\boldsymbol{\varepsilon} & =\left(
+\varepsilon_{1},\ldots,\varepsilon_{n}\right),\quad \;\;\text{   }n\times1
+\end{align*}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%
+\subsection{section2}
+%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{TITLE}
+  \framesubtitle{SUBTITLE}
+
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%
+\subsection{section3}
+%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{TITLE}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{TITLE}\framesubtitle{List}
+  \begin{columns}[T]
+    \begin{column}{2in}
+    %  \begin{footnotesize}
+     % \begin{verbatim}
+\includegraphics[width=0.5\linewidth]{ZJU_LOGO.png}\par
+not only picture,text and formula also available
+      %\end{verbatim}
+     % \end{footnotesize}
+    \end{column}
+
+    \begin{column}{2in}
+    \begin{enumerate}
+       \item<2-> First item;
+       \item<3-> Second item;\\
+       ...
+       \item<4-> Last item.
+     \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{TITLE}\framesubtitle{Block}
+  \begin{block}{}
+    block
+  \end{block}
+
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%
+\section{Chapter3}
+%%%%%%%%%%%%%%%%%%%%
+\subsection{section1}
+%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{PIC.}
+  \begin{figure}
+ \centering
+ \includegraphics[width=0.5\linewidth]{ZJU_LOGO.png}
+ \caption{insert a picture}
+\end{figure}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%
+\subsection{section2}
+%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{BLANK}
+    %\verb+\usepackage{multimedia}+
+ %\begin{center}
+   % \movie[width=5cm,height=2.8cm,loop]{}{35.avi}
+ %\end{center}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Thank You!}
+
+  \begin{center}
+    \*\*\*@xmu.edu.cn
+  \end{center}
+  \nocite{*}
+  \bibliography{references}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%
+
+\end{document}
