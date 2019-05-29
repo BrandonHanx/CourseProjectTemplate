@@ -4,12 +4,12 @@
 \makeatletter
 \begin{titlepage}
     \begin{center}
-        \vspace*{1cm}
+        %\vspace*{1cm}
 
         \LARGE
         \textbf{\@title}
 
-        \vspace{1.5cm}
+        \vspace{1cm}
         
         \thesistype{}
         
@@ -22,21 +22,27 @@
 
         \vspace{1cm}
 
-        \large
-        \textbf{Author}: \thesisauthora{} (Student ID: \studentID{})\\
-        \large
-        \textbf{Supervisor}: \supervisor{}\\
-        \large
-        \textbf{Co-Supervisor}: \cosupervisor{}
+        
+        \begin{table}[htdp]
+        	\large
+        	\centering
+        	\begin{tabular}{ccc}
+        		\textbf{Author}:     &  \thesisauthora{} &  (ID: \studentIDa{})\\[10pt]
+				        	         &  \thesisauthorb{} &  (ID: \studentIDb{})\\[10pt]
+        		                     &  \thesisauthorc{} &  (ID: \studentIDc{})\\[10pt]
+        		\textbf{Supervisor}: &  \supervisor{}    &
+        	\end{tabular}
+        \end{table}
+              
 
         \vspace{1cm}
         \large
-        Department of Information Systems for Sustainable Society\\
-        Faculty of Management, Economics and Social Sciences\\
-        University of Cologne\\
-
-        \vspace{1cm}
-        \@date
+        
+        College of Information Science and Electronic Engineering\\
+        Zhejiang University
+       
+        \vspace{0.5cm}
+        \thesisdate
 
     \end{center}
 \end{titlepage}
